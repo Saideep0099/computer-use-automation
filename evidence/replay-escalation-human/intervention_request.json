@@ -1,0 +1,7 @@
+{
+  "capability": "member_savings_lookup",
+  "version": 1,
+  "step": "s1",
+  "reason": "TARGET_UNRESOLVED: no locator strategy resolved the target",
+  "goal": "Look up member 12345 and read the savings balance"
+}

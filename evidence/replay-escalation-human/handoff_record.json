@@ -1,0 +1,51 @@
+{
+  "human_actions": [
+    {
+      "kind": "click",
+      "target": {
+        "tag": "INPUT",
+        "role": "textbox",
+        "text": ""
+      },
+      "at": "20:32:35"
+    },
+    {
+      "kind": "input",
+      "target": {
+        "tag": "INPUT",
+        "role": "textbox",
+        "text": "12345"
+      },
+      "at": "20:32:38"
+    },
+    {
+      "kind": "click",
+      "target": {
+        "tag": "INPUT",
+        "role": "textbox",
+        "text": ""
+      },
+      "at": "20:32:38"
+    },
+    {
+      "kind": "input",
+      "target": {
+        "tag": "INPUT",
+        "role": "textbox",
+        "text": "07"
+      },
+      "at": "20:32:40"
+    },
+    {
+      "kind": "click",
+      "target": {
+        "tag": "INPUT",
+        "role": "button",
+        "text": "OK"
+      },
+      "at": "20:32:40"
+    }
+  ],
+  "handed_back": true,
+  "operator_console": "http://127.0.0.1:5099"
+}

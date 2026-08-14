@@ -1,0 +1,33 @@
+{
+  "human_actions": [
+    {
+      "kind": "input",
+      "target": {
+        "tag": "INPUT",
+        "role": "textbox",
+        "text": "12345"
+      },
+      "at": "20:22:14"
+    },
+    {
+      "kind": "input",
+      "target": {
+        "tag": "INPUT",
+        "role": "textbox",
+        "text": "07"
+      },
+      "at": "20:22:14"
+    },
+    {
+      "kind": "click",
+      "target": {
+        "tag": "INPUT",
+        "role": "button",
+        "text": "OK"
+      },
+      "at": "20:22:14"
+    }
+  ],
+  "handed_back": true,
+  "operator_console": "http://127.0.0.1:5099"
+}

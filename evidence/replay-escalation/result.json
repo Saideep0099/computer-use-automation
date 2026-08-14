@@ -1,0 +1,23 @@
+{
+  "log": [],
+  "artifact_id": "member_savings_lookup",
+  "artifact_version": 1,
+  "params": {
+    "member_id": "12345"
+  },
+  "status": "success",
+  "outcome_id": null,
+  "outputs": {
+    "savings_balance": "$4,812.77"
+  },
+  "message": "ok",
+  "escalation": {
+    "escalated": true,
+    "human_actions_captured": 3,
+    "handed_back": true
+  },
+  "human_assisted": true,
+  "steps_executed": 0,
+  "duration_ms": 3469,
+  "evidence_dir": "../evidence/replay-escalation"
+}

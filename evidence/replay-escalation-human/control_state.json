@@ -1,0 +1,55 @@
+{
+  "current": "AUTOMATION",
+  "history": [
+    {
+      "state": "AUTOMATION",
+      "why": "run started",
+      "at": "2026-08-13T20:23:41"
+    },
+    {
+      "state": "PAUSED",
+      "why": "TARGET_UNRESOLVED: no locator strategy resolved the target",
+      "at": "2026-08-13T20:23:41"
+    },
+    {
+      "state": "HUMAN",
+      "why": "operator console at http://127.0.0.1:5099",
+      "at": "2026-08-13T20:23:42"
+    },
+    {
+      "state": "RESUMING",
+      "why": "operator handed back; 0 human actions captured",
+      "at": "2026-08-13T20:25:55"
+    },
+    {
+      "state": "AUTOMATION",
+      "why": "verification and completion",
+      "at": "2026-08-13T20:25:55"
+    },
+    {
+      "state": "AUTOMATION",
+      "why": "run started",
+      "at": "2026-08-13T20:32:34"
+    },
+    {
+      "state": "PAUSED",
+      "why": "TARGET_UNRESOLVED: no locator strategy resolved the target",
+      "at": "2026-08-13T20:32:34"
+    },
+    {
+      "state": "HUMAN",
+      "why": "operator console at http://127.0.0.1:5099",
+      "at": "2026-08-13T20:32:34"
+    },
+    {
+      "state": "RESUMING",
+      "why": "operator handed back; 5 human actions captured",
+      "at": "2026-08-13T20:33:18"
+    },
+    {
+      "state": "AUTOMATION",
+      "why": "verification and completion",
+      "at": "2026-08-13T20:33:18"
+    }
+  ]
+}

@@ -37,7 +37,9 @@ import yaml
 from playwright.sync_api import sync_playwright
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent / "agent"))
+sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent / "operator"))
 from discover import observe, Policy   # reuse the same perception + guardrails
+from handoff import Handoff
 
 
 def page_text(page):
@@ -156,7 +158,8 @@ def apply_override(artifact, override):
 
 # ----------------------------------------------------------------------- run
 
-def replay(artifact_path, params, outdir, override_path=None, entry_url=None, headed=False):
+def replay(artifact_path, params, outdir, override_path=None, entry_url=None, headed=False,
+           escalate=False, _simulate_human=None):
     t0 = time.time()
     out = pathlib.Path(outdir); out.mkdir(parents=True, exist_ok=True)
     artifact = json.loads(pathlib.Path(artifact_path).read_text())
@@ -236,11 +239,28 @@ def replay(artifact_path, params, outdir, override_path=None, entry_url=None, he
                 log.append({"step": step["id"], "did": f"click {step['target']['name']}", "via": how})
             settle(page)
 
+        # ---- escalation: a hard failure mid-run hands the LIVE session to a human
+        escalation_record = None
+        if result and result["status"] == "hard_failure" and escalate:
+            ho = Handoff(page, out, {
+                "capability": artifact["capability"]["id"],
+                "version": artifact["capability"]["version"],
+                "step": result.get("failed_step"),
+                "reason": f"{result['outcome_id']}: {result.get('message','')}",
+                "goal": artifact["capability"]["description"],
+            })
+            escalation_record = ho.run(simulate_human=_simulate_human)
+            settle(page)
+            result = None   # automation resumes: re-verify state honestly below
+
         # post-steps: final outcome scan, checkpoint, extraction
         if result is None:
             cls, oid, payload = scan_outcomes(page, artifact["outcomes"])
             if cls == "business":
                 result = dict(status="business_outcome", outcome_id=oid, message=payload)
+            elif cls == "hard":
+                result = dict(status="hard_failure", outcome_id=oid, observed=payload,
+                              message="application reported an error state")
         if result is None:
             expected_texts = artifact["checkpoint"]["assert"]["any_visible_text"]
             text = page_text(page)
@@ -261,6 +281,12 @@ def replay(artifact_path, params, outdir, override_path=None, entry_url=None, he
 
         page.screenshot(path=str(out / "final.png"))
         browser.close()
+
+    if escalation_record is not None:
+        result["escalation"] = {"escalated": True,
+                                "human_actions_captured": len(escalation_record["human_actions"]),
+                                "handed_back": escalation_record["handed_back"]}
+        result["human_assisted"] = True
 
     return finish(out, t0, log=log, artifact_id=artifact["capability"]["id"],
                   artifact_version=artifact["capability"]["version"],
@@ -286,7 +312,9 @@ if __name__ == "__main__":
     ap.add_argument("--override", help="tenant override json")
     ap.add_argument("--entry-url", help="override entry url (e.g. fault-injection flags)")
     ap.add_argument("--headed", action="store_true")
+    ap.add_argument("--escalate", action="store_true",
+                    help="on hard failure, hand the live session to a human operator")
     a = ap.parse_args()
     params = dict(kv.split("=", 1) for kv in a.params)
-    r = replay(a.artifact, params, a.out, a.override, a.entry_url, a.headed)
+    r = replay(a.artifact, params, a.out, a.override, a.entry_url, a.headed, a.escalate)
     sys.exit(0 if r["status"] in ("success", "business_outcome") else 1)
