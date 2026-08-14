@@ -1,0 +1,24 @@
+{
+  "comment": "Lakeview Federal CU (tenant beta) runs the same CoreBanc vendor product as First Meridian (alpha), configured differently: relabeled controls and an extra required Branch Code field. This override adapts the base artifact instead of re-recording it.",
+  "entry_url": "http://127.0.0.1:5001/?tenant=beta",
+  "target_renames": {
+    "Member Number": "Client ID",
+    "Go": "OK"
+  },
+  "insert_steps": [
+    {
+      "before": "s2",
+      "step": {
+        "id": "s1b",
+        "action": "type",
+        "target": { "role": "textbox", "name": "Branch Code:", "frame_hint": 1 },
+        "value": { "from_input": "branch_code" },
+        "wait_after": { "condition": "load_settled", "timeout_ms": 8000 }
+      },
+      "adds_inputs": [
+        { "name": "branch_code", "type": "string", "required": true,
+          "description": "Branch code required by tenant beta's configuration" }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,156 @@
+{
+  "schema_version": "capability/v1",
+  "capability": {
+    "id": "member_savings_lookup",
+    "version": 1,
+    "name": "member savings lookup",
+    "description": "Look up member 12345 and read the savings balance",
+    "created_at": "2026-08-13T20:15:39",
+    "created_from": {
+      "trace": "../evidence/discovery-run-1/trace.json",
+      "driver": "llm",
+      "discovery_goal": "Look up member 12345 and read the savings balance"
+    },
+    "review": {
+      "state": "draft",
+      "reviewer": null
+    }
+  },
+  "surface": {
+    "kind": "web",
+    "entry_url": "http://127.0.0.1:5001"
+  },
+  "inputs": [
+    {
+      "name": "member_id",
+      "type": "number",
+      "required": true,
+      "description": "value entered into 'Member Number:'"
+    }
+  ],
+  "outputs": [
+    {
+      "name": "savings_balance",
+      "type": "money",
+      "extract": {
+        "strategy": "labeled_value",
+        "label": "Savings Balance",
+        "example": "$4,812.77"
+      }
+    }
+  ],
+  "steps": [
+    {
+      "id": "s1",
+      "action": "type",
+      "target": {
+        "role": "textbox",
+        "name": "Member Number:",
+        "frame_hint": 1
+      },
+      "value": {
+        "from_input": "member_id"
+      },
+      "wait_after": {
+        "condition": "load_settled",
+        "timeout_ms": 8000
+      }
+    },
+    {
+      "id": "s2",
+      "action": "click",
+      "target": {
+        "role": "button",
+        "name": "Go",
+        "frame_hint": 1
+      },
+      "wait_after": {
+        "condition": "load_settled",
+        "timeout_ms": 8000
+      }
+    }
+  ],
+  "checkpoint": {
+    "after_step": "s2",
+    "assert": {
+      "any_visible_text": [
+        "Savings Balance"
+      ]
+    },
+    "meaning": "we reached the state that exposes the declared outputs"
+  },
+  "outcomes": {
+    "business": [
+      {
+        "id": "MEMBER_NOT_FOUND",
+        "detect": {
+          "text_regex": "No member found for .* '(?P<query>[^']*)'"
+        },
+        "returns": {
+          "message_from": "match",
+          "fields": [
+            "query"
+          ]
+        },
+        "caller_hint": "The searched id does not exist. Not an error."
+      },
+      {
+        "id": "ACCESS_DENIED",
+        "detect": {
+          "text_regex": "lacks permission to view this record"
+        },
+        "returns": {
+          "message": "Operator lacks permission for this record."
+        },
+        "caller_hint": "Record exists but operator role cannot view it. Route to supervisor."
+      },
+      {
+        "id": "VALIDATION_ERROR",
+        "detect": {
+          "text_regex": "Validation Error"
+        },
+        "returns": {
+          "message_from_page": true
+        },
+        "caller_hint": "Input rejected by the application's own validation."
+      }
+    ],
+    "recoverable": [
+      {
+        "id": "SESSION_NOTICE_INTERSTITIAL",
+        "detect": {
+          "text_regex": "Session Notice"
+        },
+        "recovery": [
+          {
+            "action": "click",
+            "target": {
+              "role": "button",
+              "name": "Acknowledge"
+            }
+          }
+        ],
+        "max_attempts": 2
+      },
+      {
+        "id": "TRANSIENT_SLOW_LOAD",
+        "detect": {
+          "condition": "load_timeout"
+        },
+        "recovery": [
+          {
+            "action": "retry_wait",
+            "timeout_ms": 6000
+          }
+        ],
+        "max_attempts": 2
+      }
+    ],
+    "hard_failure_examples": [
+      "HTTP 5xx / app error page",
+      "checkpoint assertion failed",
+      "target element unresolvable after all fallbacks"
+    ]
+  },
+  "policy_ref": "agent/policy.yaml"
+}

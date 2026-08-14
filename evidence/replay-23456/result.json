@@ -1,0 +1,29 @@
+{
+  "log": [
+    {
+      "step": "s1",
+      "did": "type into Member Number:",
+      "via": "derived-label role+name in frame 1 (pos 0)",
+      "value": "23456"
+    },
+    {
+      "step": "s2",
+      "did": "click Go",
+      "via": "a11y role+name in frame 1"
+    }
+  ],
+  "artifact_id": "member_savings_lookup",
+  "artifact_version": 1,
+  "params": {
+    "member_id": "23456"
+  },
+  "status": "success",
+  "outcome_id": null,
+  "outputs": {
+    "savings_balance": "$310.05"
+  },
+  "message": "ok",
+  "steps_executed": 2,
+  "duration_ms": 2665,
+  "evidence_dir": "../evidence/replay-23456"
+}

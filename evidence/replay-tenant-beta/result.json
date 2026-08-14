@@ -1,0 +1,36 @@
+{
+  "log": [
+    {
+      "step": "s1",
+      "did": "type into Client ID",
+      "via": "derived-label role+name in frame 1 (pos 0)",
+      "value": "12345"
+    },
+    {
+      "step": "s1b",
+      "did": "type into Branch Code:",
+      "via": "derived-label role+name in frame 1 (pos 1)",
+      "value": "07"
+    },
+    {
+      "step": "s2",
+      "did": "click OK",
+      "via": "a11y role+name in frame 1"
+    }
+  ],
+  "artifact_id": "member_savings_lookup",
+  "artifact_version": 1,
+  "params": {
+    "member_id": "12345",
+    "branch_code": "07"
+  },
+  "status": "success",
+  "outcome_id": null,
+  "outputs": {
+    "savings_balance": "$4,812.77"
+  },
+  "message": "ok",
+  "steps_executed": 3,
+  "duration_ms": 2313,
+  "evidence_dir": "../evidence/replay-tenant-beta"
+}

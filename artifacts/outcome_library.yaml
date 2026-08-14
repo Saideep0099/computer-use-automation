@@ -1,0 +1,47 @@
+# Outcome library for the "CoreBanc Teller Console" app family.
+#
+# THE central design idea (brief 3.3 + glossary): runtime conditions are part of
+# the capability's CONTRACT, not exceptions. Three classes:
+#   business:    legitimate answers the caller needs ("no such member") — replay
+#                returns them as results, never as crashes.
+#   recoverable: known interstitial states with a safe scripted recovery — replay
+#                performs the recovery and continues.
+#   (hard failure is the implicit fallback for everything undeclared.)
+#
+# In production this library is curated per vendor product and SHARED across all
+# tenants running that product; detections are text/state patterns, not selectors,
+# so tenant branding differences don't break them.
+
+business:
+  - id: MEMBER_NOT_FOUND
+    detect: { text_regex: "No member found for .* '(?P<query>[^']*)'" }
+    returns: { message_from: match, fields: [query] }
+    caller_hint: "The searched id does not exist. Not an error."
+
+  - id: ACCESS_DENIED
+    detect: { text_regex: "lacks permission to view this record" }
+    returns: { message: "Operator lacks permission for this record." }
+    caller_hint: "Record exists but operator role cannot view it. Route to supervisor."
+
+  - id: VALIDATION_ERROR
+    detect: { text_regex: "Validation Error" }
+    returns: { message_from_page: true }
+    caller_hint: "Input rejected by the application's own validation."
+
+recoverable:
+  - id: SESSION_NOTICE_INTERSTITIAL
+    detect: { text_regex: "Session Notice" }
+    recovery:
+      - { action: click, target: { role: button, name: "Acknowledge" } }
+    max_attempts: 2
+
+  - id: TRANSIENT_SLOW_LOAD
+    detect: { condition: load_timeout }
+    recovery:
+      - { action: retry_wait, timeout_ms: 6000 }
+    max_attempts: 2
+
+hard_failure_examples:   # documentation only — anything undeclared stops the run
+  - "HTTP 5xx / app error page"
+  - "checkpoint assertion failed"
+  - "target element unresolvable after all fallbacks"
