@@ -1,0 +1,17 @@
+# Safety policy for the automation system.
+# The agent may not navigate outside these URL patterns, may not perform
+# action types not listed, and all text that reaches logs/artifacts is
+# passed through the redaction patterns.
+
+allowed_url_patterns:
+  - "^http://127\\.0\\.0\\.1:5001"
+  - "^http://localhost:5001"
+
+allowed_actions: [click, type, navigate, extract, done, stuck]
+
+# Regulated-data hygiene: mask anything that looks like an SSN, card number,
+# or credential-ish token before it is persisted anywhere.
+redact_patterns:
+  - "\\b\\d{3}-\\d{2}-\\d{4}\\b"          # SSN
+  - "\\b(?:\\d[ -]?){13,16}\\b"           # card-like numbers
+  - "(?i)(password|passwd|secret|token)\\s*[:=]\\s*\\S+"

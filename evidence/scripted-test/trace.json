@@ -1,0 +1,73 @@
+{
+  "schema": "trace/v1",
+  "goal": "Look up member 12345 and read the savings balance",
+  "start_url": "http://127.0.0.1:5001",
+  "params": {
+    "member_id": "12345"
+  },
+  "driver": "scripted",
+  "started_at": "2026-08-13T20:01:14",
+  "steps": [
+    {
+      "n": 1,
+      "observation_summary": "VISIBLE TEXT:\nFirst Meridian CU \u00a0|\u00a0 TELLER CONSOLE\tOperator: T-4471 \u00a0 Session: 08:01\n(c) 2004-2026 CoreBanc Systems Inc. Unauthorized access prohibited.\nMember Lookup\nMember Number:\t\n\t\nEnter exact member number and press Go.\n\nINTERACTIVE ELEMENTS:\n  [0] button \"Go\"\n  [1] textbox \"Member Number:\"",
+      "action": {
+        "action": "type",
+        "element_id": 1,
+        "text": "12345",
+        "reason": "enter member number"
+      },
+      "screenshot": "step01.png",
+      "policy_veto": null,
+      "target": {
+        "role": "textbox",
+        "name": "Member Number:",
+        "frame_index": 1
+      },
+      "typed": "12345"
+    },
+    {
+      "n": 2,
+      "observation_summary": "VISIBLE TEXT:\nFirst Meridian CU \u00a0|\u00a0 TELLER CONSOLE\tOperator: T-4471 \u00a0 Session: 08:01\n(c) 2004-2026 CoreBanc Systems Inc. Unauthorized access prohibited.\nMember Lookup\nMember Number:\t\n\t\nEnter exact member number and press Go.\n\nINTERACTIVE ELEMENTS:\n  [0] button \"Go\"\n  [1] textbox \"Member Number:\"",
+      "action": {
+        "action": "click",
+        "element_id": 0,
+        "reason": "submit search"
+      },
+      "screenshot": "step02.png",
+      "policy_veto": null,
+      "target": {
+        "role": "button",
+        "name": "Go",
+        "frame_index": 1
+      }
+    },
+    {
+      "n": 3,
+      "observation_summary": "VISIBLE TEXT:\nFirst Meridian CU \u00a0|\u00a0 TELLER CONSOLE\tOperator: T-4471 \u00a0 Session: 08:01\n(c) 2004-2026 CoreBanc Systems Inc. Unauthorized access prohibited.\nMember Detail - 12345\nName\tMaria Alvarez\nStatus\tActive\nSavings Balance\t$4,812.77\nChecking Balance\t$1,203.10\n\n\u00ab New search\n\nINTERACTIVE ELEMENTS:\n  [0] link \"\u00ab New search\"",
+      "action": {
+        "action": "extract",
+        "name": "savings_balance",
+        "value": "$4,812.77",
+        "reason": "read balance from detail table"
+      },
+      "screenshot": "step03.png",
+      "policy_veto": null
+    },
+    {
+      "n": 4,
+      "observation_summary": "VISIBLE TEXT:\nFirst Meridian CU \u00a0|\u00a0 TELLER CONSOLE\tOperator: T-4471 \u00a0 Session: 08:01\n(c) 2004-2026 CoreBanc Systems Inc. Unauthorized access prohibited.\nMember Detail - 12345\nName\tMaria Alvarez\nStatus\tActive\nSavings Balance\t$4,812.77\nChecking Balance\t$1,203.10\n\n\u00ab New search\n\nINTERACTIVE ELEMENTS:\n  [0] link \"\u00ab New search\"",
+      "action": {
+        "action": "done",
+        "reason": "balance extracted"
+      },
+      "screenshot": "step04.png",
+      "policy_veto": null
+    }
+  ],
+  "status": "success",
+  "outputs": {
+    "savings_balance": "$4,812.77"
+  },
+  "finished_at": "2026-08-13T20:01:20"
+}
