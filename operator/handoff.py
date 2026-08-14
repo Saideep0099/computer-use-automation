@@ -1,4 +1,4 @@
-"""
+r"""
 Human-in-the-loop escalation & handoff (brief 3.6).
 
 Control-transfer model (the design the brief asks us to reason about):
@@ -145,14 +145,7 @@ class Handoff:
                 urllib.request.urlopen("http://127.0.0.1:5099/handback",
                                        data=b"")), daemon=True).start()
 
-        # Wait by pumping the Playwright event loop (a plain threading wait would
-        # block dispatch of the capture-binding callbacks in the sync API).
-        deadline = time.time() + self.context.get("timeout_s", 600)
-        while not self.done.is_set() and time.time() < deadline:
-            try:
-                self.page.wait_for_timeout(250)
-            except Exception:
-                break
+        self.done.wait(timeout=self.context.get("timeout_s", 600))
         ctl.set("RESUMING", f"operator handed back; {len(self.human_actions)} human actions captured")
         record = {"human_actions": self.human_actions,
                   "handed_back": self.done.is_set(),
