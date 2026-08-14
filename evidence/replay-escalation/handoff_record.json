@@ -7,7 +7,7 @@
         "role": "textbox",
         "text": "12345"
       },
-      "at": "20:22:14"
+      "at": "13:52:08"
     },
     {
       "kind": "input",
@@ -16,7 +16,7 @@
         "role": "textbox",
         "text": "07"
       },
-      "at": "20:22:14"
+      "at": "13:52:08"
     },
     {
       "kind": "click",
@@ -25,7 +25,7 @@
         "role": "button",
         "text": "OK"
       },
-      "at": "20:22:14"
+      "at": "13:52:08"
     }
   ],
   "handed_back": true,
